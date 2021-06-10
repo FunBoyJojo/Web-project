@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title> Блог сайта </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<h2 class="h2" th:text="${title}" style="margin-left:10%"></h2>
+<div class="container mt-5 mb-5">
+    <form action="/blog/addQuery" enctype="multipart/form-data" method="post">
+        <div class="form-group row">
+            <input type="text" name="title" placeholder="вопрос" class="form-control p-3"><br>
+        </div>
+        <div class="form-group mt-2">
+
+                <p><input type="file" name="img" multiple="true" accept="image/*,image/jpeg"></p>
+
+                <input type="text" name="answer_text_1" placeholder="ответ" class="col-sm-5 "><br>
+                <input type="checkbox" name="answer_istrue_1" ><br>
+
+                <input type="text" name="answer_text_2" placeholder="ответ" class="col-sm-5 "><br>
+                <input type="checkbox" name="answer_istrue_2"><br>
+
+                <input type="text" name="answer_text_3" placeholder="ответ" class="col-sm-5 "><br>
+                <input type="checkbox" name="answer_istrue_3"><br>
+
+                <input type="text" name="answer_text_4" placeholder="ответ" class="col-sm-5 "><br>
+                <input type="checkbox" name="answer_istrue_4" ><br>
+
+        </div>
+        <button type="submit" class="btn btn-success"> следующий</button>
+    </form>
+    <a class="me-3 py-2 text-dark text-decoration-none" href="/">закончить</a>
+</div>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>

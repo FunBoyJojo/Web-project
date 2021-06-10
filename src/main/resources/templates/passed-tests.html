@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<main>
+    <form action="/blog/passed-tests" th:object="${test}" method="post">
+    </div>
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div th:each="el : ${test}" class="alert alert-info mt-2">
+                <h3 th:text="${el.title}" />
+                <div style="display: flex;">
+                    <p style="margin-right:7px">Результат: </p>
+                    <p th:text="${score}" th:object="${score}"/>
+                     %
+                </div>
+                    <button type="submit" class="btn btn-success">Сохранить</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    </form>
+</main>
+</body>
+</html>

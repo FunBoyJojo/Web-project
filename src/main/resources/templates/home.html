@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title th:text="${title}" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<main>
+    <form action="/search">
+        <div class="input-group" style="width:60%; margin-left:20%">
+            <input type="search" name ="title" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+            <button type="submit" class="btn btn-outline-primary">search</button>
+        </div>
+    </form>
+    <div class="album py-5 bg-light">
+        <div class="container">
+                <div th:each="el : ${tests}" class="alert alert-info mt-2">
+                    <h3 th:text="${el.title}"/>
+                    <p id="time" th:text="${el.time}/60000"/>
+                    <p th:text="${el.countOfPass}"/>
+                    <a th:href="'/blog/passing-tests/' + ${el.id}" class="btn btn-warning">Пройти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div th:insert="blocks/footer :: footer"></div>
+</body>
+</html>
