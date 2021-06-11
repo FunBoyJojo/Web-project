@@ -12,11 +12,15 @@
     <div class="album py-5 bg-light">
         <div class="container">
             <div th:each="el : ${savedtests}" class="alert alert-info mt-2">
-                <h3 th:text="${el.id}"/>
+                <h3 th:text="${el.test.title}"/>
                 <div style="display: flex;">
                     <p style="margin-right:7px">Результат: </p>
                     <p th:text="${el.result}"/>
                     %
+                </div>
+                <div style="display: flex;">
+                    <p style="margin-right:7px">Осталось попыток: </p>
+                <p th:text="${el.countoftry}"/>
                 </div>
             </div>
         </div>

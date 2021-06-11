@@ -1,4 +1,3 @@
-/*
 package com.testplus.testplus.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +21,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
 
-   */
-/* @Autowired
+ @Autowired
     private DataSource dataSource;
     @Override
     protected void configure(HttpSecurity config) throws Exception {
         config
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-//                .antMatchers("/blog/passing-tests").hasRole("USER")
+                //.antMatchers("/**").hasRole("ADMIN")
 //                .antMatchers("/blog/create-test").hasRole("TEACHER")
+//
+//                .antMatchers("/blog/passing-tests","/blog/passing-tests/**").hasRole("USER")
+
+                .antMatchers("/**").permitAll()
+                .antMatchers("/blog/create-test").permitAll()
+                .antMatchers("/blog/create-test/**").permitAll()
+
                 .and()
-                .formLogin().loginPage("/blog/login").defaultSuccessUrl("/").permitAll()
-                .and()
-                .logout().logoutUrl("/blog/logout").permitAll();
+                .formLogin().loginPage("/blog/login").defaultSuccessUrl("/").permitAll();
+                //.and()
+                //.logout().logoutUrl("/blog/login").permitAll();
     }
 
     @Override
@@ -45,20 +50,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(NoOpPasswordEncoder.getInstance())
                 .usersByUsernameQuery("select login, password, active from user where login=?")
                 .authoritiesByUsernameQuery("select u.login, ur.roles from user u inner join user_role ur on u.id = ur.user_id where u.login=?");
+
+    }
+//
+    @Bean
+    @Override
+    public UserDetailsService userDetailsService() {
+        UserDetails user =
+                User.withDefaultPasswordEncoder()
+                        .username("user")
+                        .password("password")
+                        .roles("USER")
+                        .build();
+
+
+        return new InMemoryUserDetailsManager(user);
     }
 
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withDefaultPasswordEncoder()
-//                        .username("user")
-//                        .password("password")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-//    }*//*
-
 }
-*/

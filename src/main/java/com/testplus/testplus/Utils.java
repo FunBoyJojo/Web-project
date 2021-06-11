@@ -3,6 +3,8 @@ package com.testplus.testplus;
 import com.testplus.testplus.models.Answer;
 import com.testplus.testplus.models.Query;
 import com.testplus.testplus.models.Test;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -47,8 +49,6 @@ public class Utils {
 
             return value.replace(',','.');
         }
-
-        //return result*100/querys.size();
     }
 
     public static long timeConvertor(String time_h, String time_m)
@@ -74,5 +74,16 @@ public class Utils {
             queries.remove(tmp);
         }
         currentTest.setQuerys(newlist);
+    }
+
+    public static String getCurrentUserLogin(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = "";
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails)principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+        return username;
     }
 }

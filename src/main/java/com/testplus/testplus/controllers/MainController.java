@@ -1,4 +1,5 @@
 package com.testplus.testplus.controllers;
+import com.testplus.testplus.Utils;
 import com.testplus.testplus.models.Test;
 import com.testplus.testplus.repo.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model) {
         Iterable<Test> tests = testRepository.findAll();
+        Utils.getCurrentUserLogin();
         model.addAttribute("tests", tests);
         return "home";
     }

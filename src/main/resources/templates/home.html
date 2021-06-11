@@ -19,8 +19,15 @@
         <div class="container">
                 <div th:each="el : ${tests}" class="alert alert-info mt-2">
                     <h3 th:text="${el.title}"/>
-                    <p id="time" th:text="${el.time}/60000"/>
-                    <p th:text="${el.countOfPass}"/>
+                    <div style="display: flex;">
+                        <p style="margin-right:7px">Минут на тест: </p>
+                        <p id="time" th:text="${el.time}/60000"/>
+                    </div>
+                        <br>
+                    <div style="display: flex;">
+                        <p style="margin-right:7px"> Попыток </p>
+                        <p th:text="${el.countOfPass}"/>
+                    </div>
                     <a th:href="'/blog/passing-tests/' + ${el.id}" class="btn btn-warning">Пройти</a>
                 </div>
             </div>

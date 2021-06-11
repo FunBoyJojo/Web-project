@@ -1,5 +1,6 @@
 package com.testplus.testplus.controllers;
 
+import com.testplus.testplus.Utils;
 import com.testplus.testplus.models.PassedTests;
 import com.testplus.testplus.models.Test;
 import com.testplus.testplus.models.User;
@@ -27,30 +28,9 @@ public class SaveController {
 
     @GetMapping("/blog/saved-passed-tests")
     public String pageOfPassedTests(Model model) {
-        Iterable<PassedTests> savedTests = savePassedTests.findAll();
-        model.addAttribute("savedtests", savedTests);
+        User user = userRepository.findByLogin(Utils.getCurrentUserLogin());
+        model.addAttribute("savedtests",user.getPassedtests().iterator());
         return "saved-passed-tests";
     }
-
-    @PostMapping("/blog/passed-tests")
-    public String saveResult(/*@ModelAttribute Test test, @ModelAttribute String score, */Model model)
-    {
-     /*   Optional<Test> t = testRepository.findById(2);
-        Optional<User> user = userRepository.findById(1);
-        ArrayList<Test> res = new ArrayList<>();
-        ArrayList<User> ures = new ArrayList<>();
-
-        t.ifPresent(res::add);
-        user.ifPresent(ures::add);
-
-        PassedTests passedTests = new PassedTests();
-        passedTests.setTest(res.get(0));
-        passedTests.setResult(Double.parseDouble("40"));
-        passedTests.setUser(ures.get(0));
-        savePassedTests.save(passedTests);*/
-
-        return "redirect:/";
-    }
-
 
 }

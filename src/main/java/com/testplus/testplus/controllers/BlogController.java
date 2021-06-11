@@ -3,21 +3,24 @@ package com.testplus.testplus.controllers;
 import com.testplus.testplus.Utils;
 import com.testplus.testplus.models.*;
 import com.testplus.testplus.repo.*;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class BlogController {
@@ -28,8 +31,10 @@ public class BlogController {
     private QueryRepository queryRepository;
     @Autowired
     private AnswerRepository answerRepository;
-@Autowired
-private PassedTestsRepository passedTestsRepository;
+    @Autowired
+    private PassedTestsRepository passedTestsRepository;
+    @Autowired
+    private UserRepo userRepo;
 
 
     @Value("${upload.path}")
@@ -117,6 +122,16 @@ private PassedTestsRepository passedTestsRepository;
 
     @GetMapping("/blog/passing-tests/{id}")
     public String passingTests(@PathVariable(value = "id") int id, Model model) {
+
+        User user = userRepo.findByLogin(Utils.getCurrentUserLogin());
+        for ( PassedTests pt : user.getPassedtests()) {
+            if(pt.getTest().getId()==id)
+            {
+                if (pt.getCountoftry() <= 0)
+                    return "/end";
+            }
+        }
+
         queries  = new ArrayList<>();
         Optional<Test> opTest = testRepository.findById(id);
         ArrayList<Test> res = new ArrayList<>();
@@ -161,15 +176,29 @@ private PassedTestsRepository passedTestsRepository;
             model.addAttribute("test",currentTest);
             model.addAttribute("score",score);
 
-           //todo если у юзера есть этот тестпайст, гетим его , сохраняем больший процент,
-            //todo уменьшаем количество попыток
-            //todo , если нет создаем новы, оличество попыток берем из теста, уменьшаем на один, сохраняем в его и скор в тестпейсст
-            PassedTests passedTest = new PassedTests();
-            //passedTest.setUser();
-            passedTest.setTest(currentTest);
-            passedTest.setTime(Integer.parseInt(time));
-            passedTest.setResult(Double.parseDouble(score));
-            //passedTestsRepository.save(passedTest);
+            User currentUser = userRepo.findByLogin(Utils.getCurrentUserLogin());
+            PassedTests newPassedTest = new PassedTests();
+            newPassedTest.setTest(currentTest);
+            newPassedTest.setTime(Integer.parseInt(time));
+            newPassedTest.setResult(Double.parseDouble(score));
+
+            if(currentUser.getPassedtests().contains(newPassedTest)){
+                PassedTests curUserPt = null;
+                for (PassedTests pt :currentUser.getPassedtests()) {
+                    if (pt.getTest().getId() == newPassedTest.getTest().getId()){
+                        curUserPt=pt;
+                    }
+                }
+
+                curUserPt.setCountoftry(curUserPt.getCountoftry()-1);//уменьшили кол попыток
+                if(curUserPt.getResult()<newPassedTest.getResult()){//если новый рез лучше, то заменили
+                    curUserPt.setResult(newPassedTest.getResult());
+                }
+            }else {
+                newPassedTest.setCountoftry(currentTest.getCountOfPass()-1);
+                currentUser.getPassedtests().add(newPassedTest);
+            }
+            userRepo.save(currentUser);
 
             return "passed-tests";
         }
@@ -180,6 +209,8 @@ private PassedTestsRepository passedTestsRepository;
         model.addAttribute("time",Integer.parseInt(time));
         return "passing-tests";
     }
+
+
 
      /*Добавить в модель тест поля для ввода кол-ва попыток и время на тест!!!!!!!!!!!!!!!!!!!!!!!!
     еще бы сделать по возможности отдельный тест где можно вставить картинку и вписать ответ. Сделать рандомный набор вопросов

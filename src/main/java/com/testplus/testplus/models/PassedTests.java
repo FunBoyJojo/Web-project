@@ -78,4 +78,11 @@ public class PassedTests {
     private int countoftry;
     @Column
     private long time;
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof PassedTests)
+            return ((PassedTests) obj).test.getId() == this.test.getId();
+        return false;
+    }
 }
